@@ -61,56 +61,58 @@ export function Shell() {
 
   return (
     <LazyMotion features={domAnimation} strict>
-      <div className="flex h-dvh flex-col overflow-hidden bg-paper">
-        <TopBar />
-
-        <div className="relative flex min-h-0 flex-1 overflow-hidden">
-          
-          {/* Left Sidebar (Mobile: Drawer / Desktop: Static) */}
-          <m.aside
-            className="fixed inset-y-0 left-0 z-50 h-full overflow-hidden border-r border-hairline bg-paper shadow-2xl md:relative md:z-0 md:shadow-none"
-            animate={{ width: ui.leftOpen ? PANEL_WIDTH : 0 }}
-            initial={false}
-            transition={transition}
-            aria-label="Components and versions"
-            aria-hidden={!ui.leftOpen}
-          >
-            <div
-              className="h-full overflow-y-auto"
-              style={{ width: PANEL_WIDTH }}
-              {...(ui.leftOpen ? {} : { inert: true })}
-            >
-              <ComponentList />
-              <Divider />
-              <HistoryTimeline />
-            </div>
-          </m.aside>
-
-          {/* Center Canvas */}
-          <main className="flex min-w-0 flex-1 flex-col">
-            <PreviewFrame />
-          </main>
-
-          {/* Right Sidebar (Mobile: Drawer / Desktop: Static) */}
-          <m.aside
-            className="fixed inset-y-0 right-0 z-50 h-full overflow-hidden border-l border-hairline bg-paper shadow-2xl md:relative md:z-0 md:shadow-none"
-            animate={{ width: ui.rightOpen ? PANEL_WIDTH : 0 }}
-            initial={false}
-            transition={transition}
-            aria-label="Design tokens"
-            aria-hidden={!ui.rightOpen}
-          >
-            <div
-              className="h-full overflow-y-auto"
-              style={{ width: PANEL_WIDTH }}
-              {...(ui.rightOpen ? {} : { inert: true })}
-            >
-              <TokenPanel />
-            </div>
-          </m.aside>
-
+      <div className="relative flex h-dvh w-full flex-col overflow-hidden bg-background">
+        
+        {/* Top Bar - Fixed at the top */}
+        <div className="z-50 shrink-0">
+          <TopBar />
         </div>
 
+        {/* THE CANVAS - Takes up the full background */}
+        <main className="absolute inset-0 z-0 pt-14">
+          <PreviewFrame />
+        </main>
+
+        {/* MOBILE BACKDROP - Darkens the canvas when a panel is open */}
+        <div
+          className={`absolute inset-0 z-30 bg-black/40 backdrop-blur-[2px] transition-opacity duration-200 md:hidden ${
+            ui.leftOpen || ui.rightOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+          }`}
+          onClick={() => {
+            if (ui.leftOpen) togglePanel('left')
+            if (ui.rightOpen) togglePanel('right')
+          }}
+        />
+
+        {/* LEFT FLOATING PANEL */}
+        <m.aside
+          className="absolute bottom-4 left-4 top-[4.5rem] z-40 w-[280px] overflow-hidden rounded-xl border border-border bg-card/95 shadow-2xl backdrop-blur-md"
+          animate={{ x: ui.leftOpen ? 0 : -320, opacity: ui.leftOpen ? 1 : 0 }}
+          initial={false}
+          transition={transition}
+          style={{ pointerEvents: ui.leftOpen ? 'auto' : 'none' }}
+        >
+          <div className="h-full overflow-y-auto">
+            <ComponentList />
+            <Divider />
+            <HistoryTimeline />
+          </div>
+        </m.aside>
+
+        {/* RIGHT FLOATING PANEL (Token Panel) */}
+        <m.aside
+          className="absolute bottom-4 right-4 top-[4.5rem] z-40 w-[280px] overflow-hidden rounded-xl border border-border bg-card/95 shadow-2xl backdrop-blur-md"
+          animate={{ x: ui.rightOpen ? 0 : 320, opacity: ui.rightOpen ? 1 : 0 }}
+          initial={false}
+          transition={transition}
+          style={{ pointerEvents: ui.rightOpen ? 'auto' : 'none' }}
+        >
+          <div className="h-full overflow-y-auto">
+            <TokenPanel />
+          </div>
+        </m.aside>
+
+        {/* Bottom Overlays */}
         <CommandBar />
         <ExportSheet />
         <HelpSheet />

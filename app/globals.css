@@ -1,140 +1,55 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-/* ───────────────────────────────────────────────────────────────
-   STUDIO CHROME
-   Deliberately achromatic. The centre of the screen shows the
-   user's colours; anything loud in here competes with the work.
-   One accent (iris) carries focus and active state. Red/amber/green
-   appear nowhere except contrast verdicts, so colour always means
-   something.
-   ─────────────────────────────────────────────────────────────── */
-:root {
-  --chrome-paper: #fafaf9;
-  --chrome-surface: #ffffff;
-  --chrome-raised: #ffffff;
-  --chrome-ink: #0b0b0c;
-  --chrome-muted: #6b6b70;
-  --chrome-dim: #9a9aa0;
-  --chrome-hairline: #e5e5e2;
-  --chrome-iris: #5b5bd6;
-  --chrome-iris-soft: #eeeefc;
-  --chrome-pass: #15803d;
-  --chrome-warn: #b45309;
-  --chrome-fail: #c81e1e;
-
-  --chrome-shadow: 0 1px 2px rgb(11 11 12 / 0.04), 0 8px 24px -8px rgb(11 11 12 / 0.12);
-
-  --ease-studio: cubic-bezier(0.2, 0, 0, 1);
-  --dur-state: 150ms;
-  --dur-layout: 200ms;
-
-  color-scheme: light;
-}
-
-[data-theme='dark'] {
-  --chrome-paper: #0b0b0c;
-  --chrome-surface: #121214;
-  --chrome-raised: #1a1a1d;
-  --chrome-ink: #fafaf9;
-  --chrome-muted: #9a9aa0;
-  --chrome-dim: #6b6b70;
-  --chrome-hairline: #272729;
-  --chrome-iris: #8b8bf5;
-  --chrome-iris-soft: #1e1e3a;
-  --chrome-pass: #4ade80;
-  --chrome-warn: #fbbf24;
-  --chrome-fail: #f87171;
-
-  --chrome-shadow: 0 1px 2px rgb(0 0 0 / 0.4), 0 8px 24px -8px rgb(0 0 0 / 0.6);
-
-  color-scheme: dark;
-}
-
 @layer base {
-  * {
-    border-color: var(--chrome-hairline);
+  :root {
+    /* Light Mode (Paper's white canvas) */
+    --background: 60 9% 98%;      /* #FAFAF9 - Warm paper white */
+    --foreground: 0 0% 8%;        /* #141414 - Ink black */
+    --card: 0 0% 100%;            /* Pure white for floating panels */
+    --card-foreground: 0 0% 8%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 8%;
+    --primary: 0 0% 8%;
+    --primary-foreground: 60 9% 98%;
+    --secondary: 60 5% 96%;
+    --secondary-foreground: 0 0% 8%;
+    --muted: 60 5% 96%;
+    --muted-foreground: 0 0% 45%;
+    --accent: 60 5% 96%;
+    --accent-foreground: 0 0% 8%;
+    --destructive: 0 72% 50%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 90%;
+    --input: 0 0% 90%;
+    --ring: 0 0% 8%;
   }
 
-  html {
-    -webkit-text-size-adjust: 100%;
-  }
-
-  body {
-    background: var(--chrome-paper);
-    color: var(--chrome-ink);
-    font-feature-settings: 'cv05' 1, 'ss01' 1;
-    -webkit-font-smoothing: antialiased;
-    text-rendering: optimizeLegibility;
-    overscroll-behavior: none;
-  }
-
-  /* Focus is the single job of the accent colour. */
-  :focus-visible {
-    outline: 2px solid var(--chrome-iris);
-    outline-offset: 2px;
-    border-radius: 3px;
-  }
-  :focus:not(:focus-visible) {
-    outline: none;
-  }
-
-  ::selection {
-    background: var(--chrome-iris);
-    color: #fff;
-  }
-
-  ::-webkit-scrollbar {
-    width: 10px;
-    height: 10px;
-  }
-  ::-webkit-scrollbar-track {
-    background: transparent;
-  }
-  ::-webkit-scrollbar-thumb {
-    background: var(--chrome-hairline);
-    border: 3px solid var(--chrome-paper);
-    border-radius: 99px;
-  }
-  ::-webkit-scrollbar-thumb:hover {
-    background: var(--chrome-dim);
-  }
-}
-
-@layer utilities {
-  .hairline-r {
-    box-shadow: inset -1px 0 0 var(--chrome-hairline);
-  }
-  .hairline-l {
-    box-shadow: inset 1px 0 0 var(--chrome-hairline);
-  }
-  .hairline-b {
-    box-shadow: inset 0 -1px 0 var(--chrome-hairline);
-  }
-  .hairline-t {
-    box-shadow: inset 0 1px 0 var(--chrome-hairline);
-  }
-  .elevated {
-    box-shadow: var(--chrome-shadow);
-  }
-  /* The checkerboard behind the preview stage, so transparent
-     components and light/dark surfaces stay readable. */
-  .stage-grid {
-    background-image: radial-gradient(circle at 1px 1px, var(--chrome-hairline) 1px, transparent 0);
-    background-size: 16px 16px;
-  }
-}
-
-/* A real second code path, not a token gesture: every transform-based
-   motion becomes instant, and only opacity is allowed to ease. */
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
+  .dark, [data-theme="dark"] {
+    /* Dark Mode (Paper's signature black canvas) */
+    --background: 0 0% 0%;        /* #000000 - Infinite black canvas */
+    --foreground: 46 20% 92%;     /* #F0EFE4 - Warm off-white ink */
+    
+    --card: 0 0% 3%;              /* #080808 - Floating panels */
+    --card-foreground: 46 20% 92%;
+    
+    --popover: 0 0% 3%;
+    --popover-foreground: 46 20% 92%;
+    
+    --primary: 46 20% 92%;        /* Action buttons use the ink color */
+    --primary-foreground: 0 0% 3%;
+    
+    --secondary: 0 0% 12%;        /* #1F1F1F */
+    --secondary-foreground: 46 20% 92%;
+    
+    --muted: 0 0% 12%;
+    --muted-foreground: 0 0% 56%; /* #8F8F8F - Dimmed text */
+    
+    --accent: 0 0% 15%;           /* #262626 - Hover states */
+    --accent-foreground: 46 20% 92%;
+    
+    --destructive: 0 60% 50%;
+    --destructive-foreground: 0 0% 100%;
+    
+    --border: 0 0% 15%;           /* #262626 - Subtle grid lines */
+    --input: 0 0% 15%;
+    --ring: 46 20% 92%;
   }
 }
