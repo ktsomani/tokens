@@ -64,13 +64,11 @@ export function Shell() {
       <div className="flex h-dvh flex-col overflow-hidden bg-paper">
         <TopBar />
 
-        {/* Relative container for mobile drawers */}
-        <div className="relative flex min-h-0 flex-1">
+        <div className="relative flex min-h-0 flex-1 overflow-hidden">
           
-          {/* Left: what exists */}
+          {/* Left Sidebar (Mobile: Drawer / Desktop: Static) */}
           <m.aside
-            // MOBILE: fixed overlay. DESKTOP: relative sidebar.
-            className="fixed inset-y-0 left-0 z-40 h-full border-r border-hairline bg-paper shadow-2xl md:relative md:z-0 md:shadow-none md:hairline-r"
+            className="fixed inset-y-0 left-0 z-50 h-full overflow-hidden border-r border-hairline bg-paper shadow-2xl md:relative md:z-0 md:shadow-none"
             animate={{ width: ui.leftOpen ? PANEL_WIDTH : 0 }}
             initial={false}
             transition={transition}
@@ -88,15 +86,14 @@ export function Shell() {
             </div>
           </m.aside>
 
-          {/* Centre: the work */}
+          {/* Center Canvas */}
           <main className="flex min-w-0 flex-1 flex-col">
             <PreviewFrame />
           </main>
 
-          {/* Right: what it is made of */}
+          {/* Right Sidebar (Mobile: Drawer / Desktop: Static) */}
           <m.aside
-            // MOBILE: fixed overlay. DESKTOP: relative sidebar.
-            className="fixed inset-y-0 right-0 z-40 h-full border-l border-hairline bg-paper shadow-2xl md:relative md:z-0 md:shadow-none md:hairline-l"
+            className="fixed inset-y-0 right-0 z-50 h-full overflow-hidden border-l border-hairline bg-paper shadow-2xl md:relative md:z-0 md:shadow-none"
             animate={{ width: ui.rightOpen ? PANEL_WIDTH : 0 }}
             initial={false}
             transition={transition}
@@ -104,24 +101,13 @@ export function Shell() {
             aria-hidden={!ui.rightOpen}
           >
             <div
-              className="h-full"
+              className="h-full overflow-y-auto"
               style={{ width: PANEL_WIDTH }}
               {...(ui.rightOpen ? {} : { inert: true })}
             >
               <TokenPanel />
             </div>
           </m.aside>
-
-          {/* Mobile Overlay: Clicking outside closes the panels */}
-          {(ui.leftOpen || ui.rightOpen) && (
-            <div 
-              className="fixed inset-0 z-30 bg-black/20 backdrop-blur-sm md:hidden"
-              onClick={() => {
-                if (ui.leftOpen) togglePanel('left');
-                if (ui.rightOpen) togglePanel('right');
-              }}
-            />
-          )}
 
         </div>
 
