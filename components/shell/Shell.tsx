@@ -13,7 +13,6 @@ import { HelpSheet } from './HelpSheet'
 import { ExportSheet } from '@/components/export/ExportSheet'
 import { TopBar } from './TopBar'
 import { Divider } from '@/components/ui/primitives'
-import { CommandMenu } from './CommandMenu'
 
 const PANEL_WIDTH = 288
 
@@ -65,10 +64,13 @@ export function Shell() {
       <div className="flex h-dvh flex-col overflow-hidden bg-paper">
         <TopBar />
 
-        <div className="flex min-h-0 flex-1">
+        {/* Relative container for mobile drawers */}
+        <div className="relative flex min-h-0 flex-1">
+          
           {/* Left: what exists */}
           <m.aside
-            className="hairline-r shrink-0 overflow-hidden bg-paper"
+            // MOBILE: fixed overlay. DESKTOP: relative sidebar.
+            className="fixed inset-y-0 left-0 z-40 h-full border-r border-hairline bg-paper shadow-2xl md:relative md:z-0 md:shadow-none md:hairline-r"
             animate={{ width: ui.leftOpen ? PANEL_WIDTH : 0 }}
             initial={false}
             transition={transition}
@@ -93,7 +95,8 @@ export function Shell() {
 
           {/* Right: what it is made of */}
           <m.aside
-            className="hairline-l shrink-0 overflow-hidden bg-paper"
+            // MOBILE: fixed overlay. DESKTOP: relative sidebar.
+            className="fixed inset-y-0 right-0 z-40 h-full border-l border-hairline bg-paper shadow-2xl md:relative md:z-0 md:shadow-none md:hairline-l"
             animate={{ width: ui.rightOpen ? PANEL_WIDTH : 0 }}
             initial={false}
             transition={transition}
@@ -108,18 +111,23 @@ export function Shell() {
               <TokenPanel />
             </div>
           </m.aside>
+
+          {/* Mobile Overlay: Clicking outside closes the panels */}
+          {(ui.leftOpen || ui.rightOpen) && (
+            <div 
+              className="fixed inset-0 z-30 bg-black/20 backdrop-blur-sm md:hidden"
+              onClick={() => {
+                if (ui.leftOpen) togglePanel('left');
+                if (ui.rightOpen) togglePanel('right');
+              }}
+            />
+          )}
+
         </div>
 
         <CommandBar />
         <ExportSheet />
         <HelpSheet />
-        
-        {/* This is the new Command Menu */}
-        <CommandMenu 
-          onOpenExport={() => setOverlay('export')} 
-          onThemeChange={(newTheme) => setTheme(newTheme as 'light' | 'dark')} 
-        />
-        
       </div>
     </LazyMotion>
   )
