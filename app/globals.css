@@ -1,0 +1,140 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ───────────────────────────────────────────────────────────────
+   STUDIO CHROME
+   Deliberately achromatic. The centre of the screen shows the
+   user's colours; anything loud in here competes with the work.
+   One accent (iris) carries focus and active state. Red/amber/green
+   appear nowhere except contrast verdicts, so colour always means
+   something.
+   ─────────────────────────────────────────────────────────────── */
+:root {
+  --chrome-paper: #fafaf9;
+  --chrome-surface: #ffffff;
+  --chrome-raised: #ffffff;
+  --chrome-ink: #0b0b0c;
+  --chrome-muted: #6b6b70;
+  --chrome-dim: #9a9aa0;
+  --chrome-hairline: #e5e5e2;
+  --chrome-iris: #5b5bd6;
+  --chrome-iris-soft: #eeeefc;
+  --chrome-pass: #15803d;
+  --chrome-warn: #b45309;
+  --chrome-fail: #c81e1e;
+
+  --chrome-shadow: 0 1px 2px rgb(11 11 12 / 0.04), 0 8px 24px -8px rgb(11 11 12 / 0.12);
+
+  --ease-studio: cubic-bezier(0.2, 0, 0, 1);
+  --dur-state: 150ms;
+  --dur-layout: 200ms;
+
+  color-scheme: light;
+}
+
+[data-theme='dark'] {
+  --chrome-paper: #0b0b0c;
+  --chrome-surface: #121214;
+  --chrome-raised: #1a1a1d;
+  --chrome-ink: #fafaf9;
+  --chrome-muted: #9a9aa0;
+  --chrome-dim: #6b6b70;
+  --chrome-hairline: #272729;
+  --chrome-iris: #8b8bf5;
+  --chrome-iris-soft: #1e1e3a;
+  --chrome-pass: #4ade80;
+  --chrome-warn: #fbbf24;
+  --chrome-fail: #f87171;
+
+  --chrome-shadow: 0 1px 2px rgb(0 0 0 / 0.4), 0 8px 24px -8px rgb(0 0 0 / 0.6);
+
+  color-scheme: dark;
+}
+
+@layer base {
+  * {
+    border-color: var(--chrome-hairline);
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background: var(--chrome-paper);
+    color: var(--chrome-ink);
+    font-feature-settings: 'cv05' 1, 'ss01' 1;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    overscroll-behavior: none;
+  }
+
+  /* Focus is the single job of the accent colour. */
+  :focus-visible {
+    outline: 2px solid var(--chrome-iris);
+    outline-offset: 2px;
+    border-radius: 3px;
+  }
+  :focus:not(:focus-visible) {
+    outline: none;
+  }
+
+  ::selection {
+    background: var(--chrome-iris);
+    color: #fff;
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--chrome-hairline);
+    border: 3px solid var(--chrome-paper);
+    border-radius: 99px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--chrome-dim);
+  }
+}
+
+@layer utilities {
+  .hairline-r {
+    box-shadow: inset -1px 0 0 var(--chrome-hairline);
+  }
+  .hairline-l {
+    box-shadow: inset 1px 0 0 var(--chrome-hairline);
+  }
+  .hairline-b {
+    box-shadow: inset 0 -1px 0 var(--chrome-hairline);
+  }
+  .hairline-t {
+    box-shadow: inset 0 1px 0 var(--chrome-hairline);
+  }
+  .elevated {
+    box-shadow: var(--chrome-shadow);
+  }
+  /* The checkerboard behind the preview stage, so transparent
+     components and light/dark surfaces stay readable. */
+  .stage-grid {
+    background-image: radial-gradient(circle at 1px 1px, var(--chrome-hairline) 1px, transparent 0);
+    background-size: 16px 16px;
+  }
+}
+
+/* A real second code path, not a token gesture: every transform-based
+   motion becomes instant, and only opacity is allowed to ease. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

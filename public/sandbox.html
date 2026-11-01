@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Preview</title>
+
+    <script src="/vendor/react.js"></script>
+    <script src="/vendor/react-dom.js"></script>
+    <script src="/vendor/sucrase.js"></script>
+    <script src="/vendor/tailwind.js"></script>
+
+    <style type="text/tailwindcss">
+      @theme inline {
+        --color-background: hsl(var(--background));
+        --color-foreground: hsl(var(--foreground));
+        --color-card: hsl(var(--card));
+        --color-card-foreground: hsl(var(--card-foreground));
+        --color-primary: hsl(var(--primary));
+        --color-primary-foreground: hsl(var(--primary-foreground));
+        --color-secondary: hsl(var(--secondary));
+        --color-secondary-foreground: hsl(var(--secondary-foreground));
+        --color-muted: hsl(var(--muted));
+        --color-muted-foreground: hsl(var(--muted-foreground));
+        --color-accent: hsl(var(--accent));
+        --color-accent-foreground: hsl(var(--accent-foreground));
+        --color-destructive: hsl(var(--destructive));
+        --color-destructive-foreground: hsl(var(--destructive-foreground));
+        --color-border: hsl(var(--border));
+        --color-input: hsl(var(--input));
+        --color-ring: hsl(var(--ring));
+
+        --radius-sm: calc(var(--radius) * 0.5);
+        --radius-DEFAULT: var(--radius);
+        --radius-md: var(--radius);
+        --radius-lg: calc(var(--radius) * 1.5);
+        --radius-xl: calc(var(--radius) * 2);
+      }
+    </style>
+
+    <style>
+      :root {
+        --background: 0 0% 100%;
+        --foreground: 240 10% 4%;
+        --radius: 0.5rem;
+        --base-size: 16px;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      html {
+        font-size: var(--base-size);
+      }
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem 1.5rem;
+        background: hsl(var(--background));
+        color: hsl(var(--foreground));
+        font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+        -webkit-font-smoothing: antialiased;
+      }
+      #root {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: opacity 120ms cubic-bezier(0.2, 0, 0, 1);
+      }
+      #root[data-shown='true'] {
+        opacity: 1;
+      }
+      @media (prefers-reduced-motion: reduce) {
+        #root {
+          transition: none;
+        }
+      }
+      .sandbox-fault {
+        font-family: ui-monospace, SFMono-Regular, monospace;
+        font-size: 12px;
+        line-height: 1.6;
+        color: #c81e1e;
+        background: #fff5f5;
+        border: 1px solid #fecaca;
+        border-radius: 6px;
+        padding: 12px 14px;
+        max-width: 42rem;
+        white-space: pre-wrap;
+        word-break: break-word;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="root"></div>
+
+    <script>
+      ;(function () {
+        'use strict'
+
+        var rootEl = document.getElementById('root')
+        var reactRoot = ReactDOM.createRoot(rootEl)
+        var currentNonce = 0
+
+        function send(msg) {
+          parent.postMessage(msg, '*')
+        }
+
+        function show() {
+          rootEl.setAttribute('data-shown', 'true')
+        }
+
+        function Boundary(props) {
+          return React.createElement(BoundaryClass, props)
+        }
+
+        var BoundaryClass = (function () {
+          function B(props) {
+            React.Component.call(this, props)
+            this.state = { error: null }
+          }
+          B.prototype = Object.create(React.Component.prototype)
+          B.prototype.constructor = B
+          B.getDerivedStateFromError = function (error) {
+            return { error: error }
+          }
+          B.prototype.componentDidCatch = function (error) {
+            send({
+              type: 'error',
+              phase: 'runtime',
+              message: String((error && error.message) || error),
+              nonce: currentNonce,
+            })
+          }
+          B.prototype.render = function () {
+            if (this.state.error) {
+              return React.createElement(
+                'div',
+                { className: 'sandbox-fault', role: 'alert' },
+                'Component threw while rendering\n\n' +
+                  String(this.state.error.message || this.state.error),
+              )
+            }
+            return this.props.children
+          }
+          return B
+        })()
+
+        function render(name, code, nonce) {
+          currentNonce = nonce
+          var js
+          try {
+            js = Sucrase.transform(code, {
+              transforms: ['jsx'],
+              jsxRuntime: 'classic',
+              production: true,
+            }).code
+          } catch (err) {
+            send({
+              type: 'error',
+              phase: 'compile',
+              message: String((err && err.message) || err),
+              nonce: nonce,
+            })
+            return
+          }
+
+          var Component
+          try {
+            var factory = new Function('React', js + '\n;return ' + name + ';')
+            Component = factory(React)
+            if (typeof Component !== 'function') {
+              throw new Error(name + ' is not a component function')
+            }
+          } catch (err) {
+            send({
+              type: 'error',
+              phase: 'compile',
+              message: String((err && err.message) || err),
+              nonce: nonce,
+            })
+            return
+          }
+
+          try {
+            reactRoot.render(
+              React.createElement(Boundary, { key: nonce }, React.createElement(Component)),
+            )
+            show()
+            send({ type: 'rendered', name: name, nonce: nonce })
+          } catch (err) {
+            send({
+              type: 'error',
+              phase: 'runtime',
+              message: String((err && err.message) || err),
+              nonce: nonce,
+            })
+          }
+        }
+
+        function applyTokens(vars) {
+          var style = document.documentElement.style
+          for (var key in vars) {
+            if (Object.prototype.hasOwnProperty.call(vars, key)) {
+              style.setProperty(key, vars[key])
+            }
+          }
+        }
+
+        function applyTheme(mode) {
+          document.documentElement.setAttribute('data-theme', mode)
+          document.documentElement.classList.toggle('dark', mode === 'dark')
+          document.documentElement.style.colorScheme = mode
+        }
+
+        var fontLink = null
+        function applyFonts(sans, mono) {
+          var families = [sans, mono]
+            .filter(Boolean)
+            .map(function (f) {
+              return 'family=' + encodeURIComponent(f).replace(/%20/g, '+') + ':wght@400;500;600;700'
+            })
+            .join('&')
+          var href = 'https://fonts.googleapis.com/css2?' + families + '&display=swap'
+          if (fontLink && fontLink.getAttribute('href') === href) return
+          if (!fontLink) {
+            fontLink = document.createElement('link')
+            fontLink.rel = 'stylesheet'
+            document.head.appendChild(fontLink)
+          }
+          fontLink.setAttribute('href', href)
+        }
+
+        window.addEventListener('message', function (event) {
+          var data = event.data
+          if (!data || typeof data !== 'object') return
+          switch (data.type) {
+            case 'ping':
+              send({ type: 'ready' })
+              break
+            case 'render':
+              render(data.name, data.code, data.nonce)
+              break
+            case 'tokens':
+              applyTokens(data.vars)
+              break
+            case 'theme':
+              applyTheme(data.mode)
+              break
+            case 'fonts':
+              applyFonts(data.sans, data.mono)
+              break
+          }
+        })
+
+        if (typeof ResizeObserver !== 'undefined') {
+          new ResizeObserver(function () {
+            send({ type: 'resize', height: document.body.scrollHeight })
+          }).observe(document.body)
+        }
+
+        send({ type: 'ready' })
+      })()
+    </script>
+  </body>
+</html>

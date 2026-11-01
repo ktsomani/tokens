@@ -1,0 +1,43 @@
+{
+  "name": "tokens-studio",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "vendor": "node scripts/vendor.mjs",
+    "predev": "node scripts/vendor.mjs",
+    "dev": "next dev",
+    "prebuild": "node scripts/vendor.mjs",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "typecheck": "tsc --noEmit",
+    "check": "node scripts/check.mjs"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.118.0",
+    "cmdk": "^1.1.1",
+    "framer-motion": "^11.11.9",
+    "nanoid": "^5.0.7",
+    "next": "14.2.35",
+    "openai": "^4.68.4",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "sucrase": "^3.35.1",
+    "zod": "^3.23.8",
+    "zustand": "^4.5.7"
+  },
+  "devDependencies": {
+    "@babel/standalone": "^7.29.12",
+    "@tailwindcss/browser": "^4.3.3",
+    "@types/node": "^20.16.11",
+    "@types/react": "^18.3.11",
+    "@types/react-dom": "^18.3.1",
+    "autoprefixer": "^10.4.20",
+    "esbuild": "^0.28.2",
+    "eslint": "^8.57.1",
+    "eslint-config-next": "14.2.35",
+    "postcss": "^8.4.47",
+    "tailwindcss": "^3.4.14",
+    "typescript": "^5.6.3"
+  }
+}
