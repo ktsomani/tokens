@@ -1,55 +1,53 @@
-@layer base {
-  :root {
-    /* Light Mode (Paper's white canvas) */
-    --background: 60 9% 98%;      /* #FAFAF9 - Warm paper white */
-    --foreground: 0 0% 8%;        /* #141414 - Ink black */
-    --card: 0 0% 100%;            /* Pure white for floating panels */
-    --card-foreground: 0 0% 8%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 8%;
-    --primary: 0 0% 8%;
-    --primary-foreground: 60 9% 98%;
-    --secondary: 60 5% 96%;
-    --secondary-foreground: 0 0% 8%;
-    --muted: 60 5% 96%;
-    --muted-foreground: 0 0% 45%;
-    --accent: 60 5% 96%;
-    --accent-foreground: 0 0% 8%;
-    --destructive: 0 72% 50%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 90%;
-    --input: 0 0% 90%;
-    --ring: 0 0% 8%;
-  }
+@import "tailwindcss";
 
-  .dark, [data-theme="dark"] {
-    /* Dark Mode (Paper's signature black canvas) */
-    --background: 0 0% 0%;        /* #000000 - Infinite black canvas */
-    --foreground: 46 20% 92%;     /* #F0EFE4 - Warm off-white ink */
-    
-    --card: 0 0% 3%;              /* #080808 - Floating panels */
-    --card-foreground: 46 20% 92%;
-    
-    --popover: 0 0% 3%;
-    --popover-foreground: 46 20% 92%;
-    
-    --primary: 46 20% 92%;        /* Action buttons use the ink color */
-    --primary-foreground: 0 0% 3%;
-    
-    --secondary: 0 0% 12%;        /* #1F1F1F */
-    --secondary-foreground: 46 20% 92%;
-    
-    --muted: 0 0% 12%;
-    --muted-foreground: 0 0% 56%; /* #8F8F8F - Dimmed text */
-    
-    --accent: 0 0% 15%;           /* #262626 - Hover states */
-    --accent-foreground: 46 20% 92%;
-    
-    --destructive: 0 60% 50%;
-    --destructive-foreground: 0 0% 100%;
-    
-    --border: 0 0% 15%;           /* #262626 - Subtle grid lines */
-    --input: 0 0% 15%;
-    --ring: 46 20% 92%;
-  }
+:root {
+  /* Light Mode (Paper's white canvas) */
+  --background: 60 9% 98%;      
+  --foreground: 0 0% 8%;        
+  --card: 0 0% 100%;            
+  --card-foreground: 0 0% 8%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 0 0% 8%;
+  --primary: 0 0% 8%;
+  --primary-foreground: 60 9% 98%;
+  --secondary: 60 5% 96%;
+  --secondary-foreground: 0 0% 8%;
+  --muted: 60 5% 96%;
+  --muted-foreground: 0 0% 45%;
+  --accent: 60 5% 96%;
+  --accent-foreground: 0 0% 8%;
+  --destructive: 0 72% 50%;
+  --destructive-foreground: 0 0% 98%;
+  --border: 0 0% 90%;
+  --input: 0 0% 90%;
+  --ring: 0 0% 8%;
+}
+
+.dark, [data-theme="dark"] {
+  /* Dark Mode (Paper's signature black canvas) */
+  --background: 0 0% 0%;        
+  --foreground: 46 20% 92%;     
+  --card: 0 0% 3%;              
+  --card-foreground: 46 20% 92%;
+  --popover: 0 0% 3%;
+  --popover-foreground: 46 20% 92%;
+  --primary: 46 20% 92%;        
+  --primary-foreground: 0 0% 3%;
+  --secondary: 0 0% 12%;        
+  --secondary-foreground: 46 20% 92%;
+  --muted: 0 0% 12%;
+  --muted-foreground: 0 0% 56%; 
+  --accent: 0 0% 15%;           
+  --accent-foreground: 46 20% 92%;
+  --destructive: 0 60% 50%;
+  --destructive-foreground: 0 0% 100%;
+  --border: 0 0% 15%;           
+  --input: 0 0% 15%;
+  --ring: 46 20% 92%;
+}
+
+body {
+  background-color: hsl(var(--background));
+  color: hsl(var(--foreground));
+  overflow-x: hidden;
 }
